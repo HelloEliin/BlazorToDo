@@ -54,24 +54,11 @@ namespace BlazorAppz.Services
 
         }
 
-        //public void DeleteList(Guid? id)
-        //{
-        //    if (id == null)
-        //    {
-        //        var listID = Guid.Parse(ListDictionary.id["ListId"]);
-        //        var selectedList = _dbContext.ToDoLists.FirstOrDefault(x => x.Id == listID);
-        //        _dbContext.ToDoLists.Remove(selectedList);
-        //        _dbContext.SaveChanges();
-        //        return;
-        //    }
-        //    else
-        //    {
-        //        var selectedList = _dbContext.ToDoLists.FirstOrDefault(x => x.Id == id);
-        //        _dbContext.ToDoLists.Remove(selectedList);
-        //        _dbContext.SaveChanges();
-        //        return;
-        //    }
-        //}
+        public async Task<CreateToDoList> DeleteList(CreateToDoList list)   //Funkar
+        {
+            var path = $"List/DeleteList/" + list.Id.ToString();
+            return await _httpClientWrapper.DeleteAsync<CreateToDoList>(path);
+        }
 
         public async Task<CreateToDoList> EditList(CreateToDoList list)
         {

@@ -5,6 +5,8 @@
 @inject NavigationManager manager;
 
 
+
+
 <div class="list-group">
     <h1>Mina listor</h1>
     
@@ -19,6 +21,11 @@
 @code {
 
     private IEnumerable<CreateToDoList> lists = new List<CreateToDoList>();
+
+    //[CascadingParameter]
+    //public bool FrontPage { get; set; } = false;
+
+
 
 
     public async System.Threading.Tasks.Task GetList(CreateToDoList list)

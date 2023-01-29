@@ -1,0 +1,75 @@
+﻿@page "/ShowTask/{taskId}"; 
+@using Services;
+@using Data;
+@inject ListHandler listHandler;     
+@inject NavigationManager manager;
+@inject TaskHandler taskHandler;
+
+<h3>TaskMenu</h3>
+
+
+<p class="taskTitle">@task.TaskTitle</p>
+<button @onclick="@(async () => await DeleteTask(task))" class="btn-small">Ta bort</button>
+<button @onclick="@(async () => await CompletedTask(task))" class="btn-small">Klar</button>
+
+
+
+<button @onclick="(() => EditTask())" class="btn-small">Ändra</button>
+<button @onclick="(() => BackToList(task.CreateToDoListId))" class="btn-small">Tillbaka till listan</button>
+
+
+@if (@ChangeName)
+{
+    <EditForm Model="@task" OnSubmit="@(async () => await SaveChanges(task))">
+        <InputText id="name" @bind-Value="task.TaskTitle" /> <br />
+        <button type="submit" class="btn-small">Spara</button>
+    </EditForm>
+
+}
+
+@code {
+
+    [Parameter]
+    public string taskId { get; set; }     //Helt klar
+    public Data.Task task = new();
+
+    public bool ChangeName { get; set; } = false;
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        Guid taskID = Guid.Parse(taskId);
+        task = await taskHandler.GetSingelTask(taskID);
+    }
+
+
+    public async System.Threading.Tasks.Task DeleteTask(Data.Task task)
+    {
+        await taskHandler.DeleteTask(task);
+        var listId = task.CreateToDoListId;
+        manager.NavigateTo($"/ShowList/{listId}");
+
+    }
+
+    public async System.Threading.Tasks.Task CompletedTask(Data.Task task)  
+    {
+        await taskHandler.MarkAsComplete(task);
+    }
+
+    public void EditTask()
+    {
+        ChangeName = !ChangeName;
+
+    }
+
+
+    public async System.Threading.Tasks.Task SaveChanges(Data.Task task)  
+    {
+        ChangeName = false;
+        await taskHandler.UpdateTask(task);
+    }
+
+    public void BackToList(Guid listId)  
+    {
+        manager.NavigateTo($"/ShowList/{listId}");
+    }
+}

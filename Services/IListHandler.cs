@@ -5,11 +5,10 @@ namespace BlazorAppz.Services
 {
     public interface IListHandler 
     {
-        //CreateToDoList CreateNewToDoList(string id, string listTitle);
         Task <CreateToDoList> CreateNewToDoList(CreateToDoList list);
         Task <Guid> GetRecentViewedList();
         Task<IEnumerable<CreateToDoList>> GetAllListsAsync();
-        //void DeleteList(Guid? id);
+        Task<CreateToDoList> DeleteList(CreateToDoList list);
         Task<CreateToDoList> EditList(CreateToDoList list);
         Task<CreateToDoList> ShowList(Guid id);
         //CreateToDoList WeeklyList(Guid? id);

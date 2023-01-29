@@ -17,9 +17,7 @@ namespace BlazorAppz.Services
             _httpClientWrapper = client;
         }
 
-        public async Task<CreateToDoList> AddTask(Data.Task task)   //Funkar. Om jag fyller i alla fält i taksen här, så ser jag allt.
-                                                                    //Om jag gör det i api:et så får jag ej se de?
-
+        public async Task<CreateToDoList> AddTask(Data.Task task)   
         {
             task.Completed = false;
             var path = $"Task/AddTask";
@@ -35,45 +33,38 @@ namespace BlazorAppz.Services
         //        return tasks;
         //    }
 
-        //    public Task EditTaskName(string taskTitle)
-        //    {
-        //        var taskId = Guid.Parse(ListDictionary.id["TaskId"]);
-        //        var task = _dbContext.Task.FirstOrDefault(x => x.Id == taskId);
-        //        task.TaskTitle = taskTitle;
-        //        _dbContext.SaveChanges();
-        //        return task;
-        //    }
+        public async Task<Task> UpdateTask(Data.Task task)
+        {
+            var path = $"Task/UpdateTask";
+            var stringContent = JsonSerializer.Serialize(task);
+            var data = new StringContent(stringContent, Encoding.UTF8, "application/json");
+            return await _httpClientWrapper.PutAsync<Task>(path, data);
 
-        public async Task<Task> DeleteTask(Data.Task task)   
+        }
+
+        public async Task<Task> DeleteTask(Data.Task task)   //Funkar
         {
             var path = $"Task/DeleteTask/" + task.Id.ToString();
             return await _httpClientWrapper.DeleteAsync<Task>(path);
         }
 
-        //public void DeleteTask()
-        //{
-        //    var taskId = Guid.Parse(ListDictionary.id["TaskId"]);
-        //    var task = _dbContext.Task.FirstOrDefault(x => x.Id == taskId);
-        //    _dbContext.Remove(task);
-        //    _dbContext.SaveChanges();
-        //}
 
-        //    public Task GetSingelTask(Guid id)
-        //    {
-        //        ListDictionary.id["TaskId"] = id.ToString();
-        //        var task = _dbContext.Task.FirstOrDefault(x => x.Id == id);
-        //        return task;
-        //    }
+        public async Task<Task> GetSingelTask(Guid id)
+        {
+            var path = $"Task/GetSingleTask/" + id.ToString(); 
+            return await _httpClientWrapper.Get<Task>(path);
+
+        }
 
 
-        //    public Task MarkAsComplete(bool completed)
-        //    {
-        //        var taskId = Guid.Parse(ListDictionary.id["TaskId"]);
-        //        var task = _dbContext.Task.FirstOrDefault(x => x.Id == taskId);
-        //        task.Completed = !task.Completed;
-        //        _dbContext.SaveChanges();
-        //        return task;
-        //    }
+        public async Task<Task> MarkAsComplete(Data.Task task)
+        {
+            var path = $"Task/Completed";
+            var stringContent = JsonSerializer.Serialize(task);
+            var data = new StringContent(stringContent, Encoding.UTF8, "application/json");
+            var result = await _httpClientWrapper.PutAsync<Task>(path, data);
+            return result;
+        }
 
 
 

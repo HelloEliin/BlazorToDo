@@ -7,8 +7,7 @@
 
 
 
-<h3>LogIn</h3>
-
+<h3>Logga in </h3>
 <EditForm Model="@user" OnSubmit="@HandleSubmit">
     <InputText id="name" @bind-Value="user.UserName" />
     <InputText id="name" @bind-Value="user.Password" />
@@ -21,9 +20,11 @@
 
     private CreateUser user = new CreateUser();
 
+
     public async System.Threading.Tasks.Task HandleSubmit()
     {
         user = await userhandler.Authenticate(user); 
         manager.NavigateTo($"/MyLists");
+
     }
 }

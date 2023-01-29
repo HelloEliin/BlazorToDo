@@ -4,7 +4,7 @@
 
 <div class="page">
     <div class="sidebar">
-        <NavMenu />
+        <NavMenu FrontPage="false"></NavMenu>
     </div>
 
     <main>
@@ -17,3 +17,9 @@
         </article>
     </main>
 </div>
+
+
+@code {
+
+        public bool FrontPage { get; set; } = false;
+ } 

@@ -7,8 +7,8 @@ namespace BlazorAppz.Services
     {
         Task<CreateToDoList> AddTask(Task task);
         //IEnumerable<Task> GetTasks(Guid id);
-        //Task EditTaskName (string title);
-        //Task GetSingelTask(Guid id);
+        Task<Task> UpdateTask(Task task);
+        Task<Task> GetSingelTask(Guid id);
 
         //Task MarkAsComplete(bool completed);
         //CreateToDoList CreateNewToDoList(string listTitle);

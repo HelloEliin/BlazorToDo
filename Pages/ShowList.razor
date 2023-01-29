@@ -3,7 +3,7 @@
 @using Data;
 @inject ListHandler listHandler;
 @inject NavigationManager manager;
-@inject TaskHandler taskHandler;
+@inject TaskHandler taskHandler;   
 
 
 <h1>@theList.ListTitle</h1>
@@ -11,9 +11,11 @@
 <div class="flex flex-row">
     @foreach (var task in theList.Task)
     {
-        <p class="taskTitle">@task.TaskTitle</p>
-        <button @onclick="@(async () => await DeleteTask(task))" class="btn-small">Ta bort</button>
-        <button @onclick="@(async () => await CompletedTask(task))" class="btn-small">Klar</button><br /><br />
+
+       
+        <button @onclick="@(async () => await ShowTask(task))" class="btn-taskTitle">@task.TaskTitle</button><br />
+
+
     }
 
 </div>
@@ -21,9 +23,10 @@
 <div class="pt-5">
 <EditForm Model="@tasks" OnSubmit="@AddTask">
     <InputText id="name"  @bind-Value="task.TaskTitle" /> <br /> 
-    <button type="submit" class="btn-small">Lägg till</button>
+    <button type="submit" class="btn-small">Lägg till ny task</button>
 </EditForm>
 </div>
+
 
 
 
@@ -34,6 +37,7 @@
     public CreateToDoList theList = new ();
     public List<Data.Task> tasks = new();
     public Data.Task task= new();
+    public bool ChangeName { get; set; } = false;    //helt klar förutom att radera listan
 
 
     [Parameter]
@@ -46,32 +50,51 @@
         theList = await listHandler.ShowList(listID);
     }
 
+    public async System.Threading.Tasks.Task ShowTask(Data.Task task)
+    {
+        manager.NavigateTo($"/ShowTask/{task.Id.ToString()}");
+    }
 
-    public async void AddTask()
+    public async void AddTask()  
     {
         Guid listID = Guid.Parse(listId);
         task.CreateToDoListId = listID;
-        task.Id = Guid.NewGuid();  //När jag la till id här på tasken så kan jag skriva in en ny o radera den direkt o den visar id
+        task.Id = Guid.NewGuid();  
         theList.Task.Add(task);
         await taskHandler.AddTask(task); 
 
     }
 
 
-    public async System.Threading.Tasks.Task DeleteTask(Data.Task task)
-    {
-        theList.Task.Remove(task); 
-        await taskHandler.DeleteTask(task);
+    //public async System.Threading.Tasks.Task DeleteTask(Data.Task task) //klart
+    //{
+    //    theList.Task.Remove(task); 
+    //    await taskHandler.DeleteTask(task);
 
-    }
+    //}
 
-    public async System.Threading.Tasks.Task CompletedTask(Data.Task task)
-    {
-        Guid listID = Guid.Parse(listId);
-        Guid taskID = task.Id;
-        theList.Task.Remove(task);
-        theList = await listHandler.ShowList(listID);
-        await taskHandler.DeleteTask(task);
-    }
+    //public async System.Threading.Tasks.Task CompletedTask(Data.Task task)  //klart
+    //{
+    //    await taskHandler.MarkAsComplete(task);
+    //}
+
+    //public void EditTask()
+    //{
+    //    ChangeName = !ChangeName;
+
+    //}
+
+
+    //public async System.Threading.Tasks.Task SaveChanges(Data.Task task)  //klart
+    //{
+    //    ChangeName = false;
+    //    await taskHandler.UpdateTask(task);
+    //}
+
+
+    //public async System.Threading.Tasks.Task DeleteList()
+    //{
+    //    await listHandler.DeleteList(theList);
+    //}
 
 }
