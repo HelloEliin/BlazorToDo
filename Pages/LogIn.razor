@@ -18,6 +18,6 @@
     public async System.Threading.Tasks.Task HandleSubmit()
     {
         user = await userhandler.Authenticate(user); 
-        manager.NavigateTo($"/MyLists");
+        manager.NavigateTo($"/MyLists", true);
     }
 }

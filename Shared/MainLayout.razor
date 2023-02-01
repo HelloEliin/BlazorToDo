@@ -23,8 +23,8 @@
 
 
 @code {
-    public bool Hide { get; set; } = false;
-    public CreateUser? currentUser { get; set; }
+    public bool Hide { get; set; } = true;
+    public CreateUser? currentUser { get; set; } = new();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
