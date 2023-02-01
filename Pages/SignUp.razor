@@ -3,11 +3,11 @@
 @using Data;
 @inject UserHandler userhandler;
 
+@if (!createdWithSuccess)
+{
+    <h3>Skapa konto</h3>
 
-<h3>CreateUser</h3>
-
-
-<EditForm Model="@user" OnSubmit="@HandleSubmit">
+    <EditForm Model="@user" OnSubmit="@HandleSubmit">
     <DataAnnotationsValidator />
     <p>Förnamn</p>
     <InputText id="name" @bind-Value="user.FirstName" /><br />
@@ -20,16 +20,25 @@
     <InputText id="name" @bind-Value="user.Password" /><br/>
     <p>Email</p>
     <InputText id="name" @bind-Value="user.Email" /><br />
-    <button type="submit">Submit</button>
+    <button class="btn-small" type="submit">Submit</button>
 </EditForm>
+}
+
+
+@if (createdWithSuccess)
+{
+    <p>Du har nu ett konto och kan logga in!</p>
+}
 
 
 @code {
-
+    public bool createdWithSuccess = false;
     private CreateUser user = new CreateUser();
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
         user = await userhandler.CreateUser(user);
+        createdWithSuccess = true;
+        user = new();
     }
 }

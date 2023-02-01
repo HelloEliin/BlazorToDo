@@ -4,9 +4,6 @@
 @inject UserHandler userhandler;
 @inject NavigationManager manager;
 
-
-
-
 <h3>Logga in </h3>
 <EditForm Model="@user" OnSubmit="@HandleSubmit">
     <InputText id="name" @bind-Value="user.UserName" />
@@ -14,17 +11,13 @@
     <button type="submit">Submit</button> 
 </EditForm>
 
-
-
 @code {
 
     private CreateUser user = new CreateUser();
-
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
         user = await userhandler.Authenticate(user); 
         manager.NavigateTo($"/MyLists");
-
     }
 }

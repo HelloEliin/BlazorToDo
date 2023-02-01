@@ -1,0 +1,63 @@
+﻿@page "/ShowUser/{userId}";
+@using Services;
+@using Data;
+@inject UserHandler userHandler;
+@inject NavigationManager manager;
+
+
+<h3 class="pb-5 pt-5">Användare</h3>
+
+<p>Användarnamn: @theUser.UserName </p>
+<p>Förnamn: @theUser.FirstName</p>
+<p>Efternamn : @theUser.LastName</p>
+<p>Email : @theUser.Email</p>
+<p>Lösenord : @theUser.Password</p>
+<p>Access : @theUser.Access</p>
+
+
+    <button @onclick="@(async () => await DeleteUser(theUser))" class="btn-small">Ta bort user</button>
+    <button @onclick="@ChangeAccess" class="btn-small">Ändra access</button>
+    @if (changeAccess)
+    {
+        <p class="pt-5">Välj ny access</p>
+        <select @bind-value="theUser.Access" @onchange="@(() => UpdateUser(theUser))" @bind-value:event="oninput">
+            <option value="@Access.User">0</option>
+            <option value="@Access.Moderator">1</option>
+            <option value="@Access.Admin">2</option>
+        </select>
+    }
+
+
+
+@code {
+    private CreateUser theUser = new();
+    private bool changeAccess { get; set; } = false;
+
+    [Parameter]
+    public string userId { get; set; }
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        Guid userID = Guid.Parse(userId);
+        theUser = await userHandler.GetUser(userID);
+    }
+
+    public async System.Threading.Tasks.Task DeleteUser(CreateUser user)
+    {
+        await userHandler.DeleteUser(user);
+        manager.NavigateTo($"/AllUsers/");
+    }
+
+    public void ChangeAccess()
+    {
+        changeAccess = !changeAccess;
+    }
+
+    public async System.Threading.Tasks.Task UpdateUser(CreateUser user)
+    {
+        await userHandler.ChangeAccess(user);
+        changeAccess = !changeAccess;
+
+    }
+   
+}

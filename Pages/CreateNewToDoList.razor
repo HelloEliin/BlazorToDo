@@ -1,25 +1,85 @@
 ﻿@page "/CreateNewToDoList";
 @using Services;
 @using Data;
-@inject ListHandler listhandler;
+@inject ListHandler listHandler;
+@inject TaskHandler taskHandler;
 
 
+<table>
+    <tr>
+        <td>
+            @if (@createNew)
+            {
+                <h3 style="text-blue">Skapa ny lista</h3>
+                <br />
+                <EditForm Model="@newList">
+                    <InputText id="name" @bind-Value="newList.ListTitle" /> <br />
+                </EditForm>
+                @*                <input type="checkbox" value="@thisWeek" @onchange="@(() => ThisWeek(newList))" />*@
+                <button class="btn-small" @onclick="HandleSubmit">Skapa</button>
+            }
+        </td>
+    </tr>
+    <tr>
 
-<h3 style="text-blue">Skapa ny lista</h3><br />
-<EditForm Model="@newList">
-    <InputText id="name" @bind-Value="newList.ListTitle" /> <br /> 
-</EditForm>
+        @if (@addTask)
+        {
+           <td> <h3>@newList.ListTitle</h3>
+            @foreach (var task in newList.Task)
+            {
+                <p>@task.TaskTitle</p>
+            }
+            <EditForm Model="@newList" OnSubmit="@AddTask">
+                <InputText id="name" @bind-Value="newTask.TaskTitle" /> <br />
+                <button type="submit" class="btn-small">Lägg till task</button>
 
-<button @onclick="HandleSubmit">Save</button>
+                <p>Lägga till listan på veckans att-göra-lista:</p> <input type="checkbox" value="@thisWeek" @onchange="@(() => ThisWeek(newList))" />
+            </EditForm>
+            </td>
+        }
+
+    </tr>
+
+
+</table>
 
 
 @code {
 
     public CreateToDoList newList = new CreateToDoList();
+    public Data.Task newTask { get; set; } = new();
+    public bool addTask { get; set; } = false;
+    public bool createNew { get; set; } = true;
+    public bool thisWeek { get; set; } = false;
+    Guid listID = Guid.NewGuid();
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-
-        newList = await listhandler.CreateNewToDoList(newList);
+        newList = await listHandler.CreateNewToDoList(newList);
+        listID = newList.Id;
+        addTask = !addTask;
+        createNew = false;
     }
+
+    public async void AddTask()
+    {
+        newTask.CreateToDoListId = listID;
+        newTask.Id = Guid.NewGuid();
+        newList.Task.Add(newTask);
+        await taskHandler.AddTask(newTask);
+        newTask = new();
+        StateHasChanged();
+    }
+
+    public async System.Threading.Tasks.Task ThisWeek(CreateToDoList list)
+    {
+        newList.ThisWeek = true;
+        await listHandler.UpdateList(newList);
+    }
+
+
+
+
+
+    
 }

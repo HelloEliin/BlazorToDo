@@ -5,11 +5,12 @@ namespace BlazorAppz.Services
     public interface IUserHandler
     {
         Task<CreateUser> CreateUser(CreateUser user);
-        //Task<CreateUser> DeleteUser(CreateUser user);
+        Task<CreateUser> DeleteUser(CreateUser user);
+        Task<CreateUser> GetCurrentUser();
 
         Task<IEnumerable<CreateUser>> GetAllUsersAsync();
 
-        //CreateUser ChangeAccess(Guid id, Access access);
+        Task<CreateUser> ChangeAccess(CreateUser user);
 
         Task<CreateUser> EditProfile(CreateUser user);
 

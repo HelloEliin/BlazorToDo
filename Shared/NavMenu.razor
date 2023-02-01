@@ -1,4 +1,8 @@
-﻿<div class="top-row ps-3 navbar navbar-dark">
+﻿@using Data;
+@using Services;
+@inject UserHandler userHandler;
+
+<div class="top-row ps-3 navbar navbar-dark">
     <div class="container-fluid">
         <a class="navbar-brand" href="">BlazorAppz</a>
         <button title="Navigation menu" class="navbar-toggler" @onclick="ToggleNavMenu">
@@ -7,44 +11,39 @@
     </div>
 </div>
 
-<div hidden="@FrontPage" class="@NavMenuCssClass" @onclick="ToggleNavMenu">
+<div class="@NavMenuCssClass" @onclick="ToggleNavMenu">
     <nav class="flex-column">
-        <div class="nav-item px-3">
+        <div hidden="@Hide" class=" nav-item px-3">
             <NavLink class="nav-link" href="" Match="NavLinkMatch.All">
                 <span class="oi oi-home" aria-hidden="true"></span> Home
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        <div hidden="@Hide" class="nav-item px-3">
             <NavLink class="nav-link" href="createnewtodolist">
                 <span class="oi oi-plus" aria-hidden="true"></span> Skapa ny lista
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        <div hidden="@Hide" class="nav-item px-3">
             <NavLink class="nav-link" href="allusers">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Se alla users i systemet
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Users
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        <div hidden="@Hide" class="nav-item px-3">
             <NavLink class="nav-link" href="getalllists">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Se alla listor i systemet
             </NavLink>
         </div>
-        <div class="nav-item px-3">
+        <div hidden="@(!Hide)" class="nav-item px-3">
             <NavLink class="nav-link" href="signup">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Skapa konto
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="login">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Logga in
+        <div hidden="@Hide" class="nav-item px-3">
+            <NavLink class="nav-link" href="myprofile">
+                <span class="oi oi-list-rich" aria-hidden="true"></span> Min profil
             </NavLink>
         </div>
-        <div class="nav-item px-3">
-            <NavLink class="nav-link" href="editprofile">
-                <span class="oi oi-list-rich" aria-hidden="true"></span> Redigera profil
-            </NavLink>
-        </div>
-        <div class="nav-item px-3">
+        <div hidden="@Hide" class="nav-item px-3">
             <NavLink class="nav-link" href="mylists">
                 <span class="oi oi-list-rich" aria-hidden="true"></span> Se egna listor
             </NavLink>
@@ -58,10 +57,15 @@
     private string? NavMenuCssClass => collapseNavMenu ? "collapse" : null;
 
     [Parameter]
-    public bool FrontPage { get; set; } = true;
+    public bool Hide { get; set; } 
+
+    [Parameter]
+    public CreateUser? currentUser { get; set; }
 
     private void ToggleNavMenu()
     {
         collapseNavMenu = !collapseNavMenu;
     }
+
+
 }

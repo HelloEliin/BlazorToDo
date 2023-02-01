@@ -1,0 +1,59 @@
+﻿@page "/MyProfile"
+@using Services;
+@using Data;
+@inject UserHandler userHandler;
+@inject NavigationManager manager;
+
+
+<h3>Min profil</h3>
+<p>@currentUser.UserName</p>
+<p>Användarnamn: @currentUser.UserName </p>
+<p>Förnamn: @currentUser.FirstName</p>
+<p>Efternamn : @currentUser.LastName</p>
+<p>Email : @currentUser.Email</p>
+<p>Lösenord : @currentUser.Password</p>
+
+<button @onclick="@EditProfile" class="btn-small">Redigera profil</button>
+
+
+@if (editProfile)
+{
+    <EditForm Model="@currentUser" OnSubmit="@UpdateUser">
+        <p class="pt-3">Förnamn : </p>
+        <InputText id="name" @bind-Value="currentUser.FirstName" /> <br />
+        <p class="pt-3">Efternamn: </p><InputText id="name" @bind-Value="currentUser.LastName" /><br />
+        <p class="pt-3">Email : </p><InputText id="name" @bind-Value="currentUser.Email" /><br />
+        <p class="pt-3 pb-3">Lösenord : </p><InputText id="name" @bind-Value="currentUser.Password" /><br />
+        <button type="submit" class="btn-small">Spara</button>
+    </EditForm>
+    
+}
+
+
+
+
+@code {
+    public CreateUser currentUser = new();
+    public bool editProfile { get; set; } = false;
+
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        currentUser = await userHandler.GetCurrentUser();
+    }
+
+    public void EditProfile()
+    {
+        editProfile = !editProfile;
+    }
+
+    public async System.Threading.Tasks.Task UpdateUser()
+    {
+        currentUser = await userHandler.EditProfile(currentUser);
+        editProfile = !editProfile;
+    }
+
+
+
+}
+

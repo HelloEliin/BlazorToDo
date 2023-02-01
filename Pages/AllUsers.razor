@@ -2,27 +2,42 @@
 @using Services;
 @using Data;
 @inject UserHandler userhandler;
+@inject NavigationManager manager;
 
-<h3>AllUsers</h3>
+<h3>Alla users</h3>
 
-<div class="sjdjd">
-    @foreach (var user in users)
-    {
-        @user.UserName
-        
-    }
-</div>
+@foreach (var user in users)
+{
+    
+        <button class="btn-user" @onclick="@(async () => await GetUser(user))">@user.UserName</button><br />
+    
+}
+
+<button @onclick="@CreateNewUser" class="btn-small">Skapa ny user</button>
 
 
-@code 
+
+@code
 {
 
     private IEnumerable<CreateUser> users = new List<CreateUser>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-            users = await userhandler.GetAllUsersAsync();
+        users = await userhandler.GetAllUsersAsync();
     }
+
+
+    public void CreateNewUser()
+    {
+        manager.NavigateTo($"/SignUp");
+    }
+
+    public async System.Threading.Tasks.Task GetUser(CreateUser user)
+    {
+        manager.NavigateTo($"/ShowUser/{user.Id.ToString()}");
+    }
+
 
 
 }

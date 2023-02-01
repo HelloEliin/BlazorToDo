@@ -1,4 +1,5 @@
 ﻿using BlazorAppz.Data;
+using Microsoft.EntityFrameworkCore;
 using System.Net;
 using System.Text;
 using System.Text.Json;
@@ -39,10 +40,10 @@ namespace BlazorAppz.Services
 
         }
 
-        public async Task<Guid> GetRecentViewedList()  //funakr
+        public async Task<CreateToDoList> GetRecentViewedList()  //funakr
         {
             var path = $"List/ViewSingleList";
-            return await _httpClientWrapper.Get<Guid>(path);
+            return await _httpClientWrapper.Get<CreateToDoList>(path);
 
         }
 
@@ -60,13 +61,14 @@ namespace BlazorAppz.Services
             return await _httpClientWrapper.DeleteAsync<CreateToDoList>(path);
         }
 
-        public async Task<CreateToDoList> EditList(CreateToDoList list)
+        public async Task<CreateToDoList> UpdateList(CreateToDoList list)
         {
             var path = $"List/EditList";
             var stringContent = JsonSerializer.Serialize(list);
             var data = new StringContent(stringContent, Encoding.UTF8, "application/json");
             var result = await _httpClientWrapper.PutAsync<CreateToDoList>(path, data);
             return result;
+
         }
 
         public async Task<CreateToDoList> ShowList(Guid id)   //Funkar
