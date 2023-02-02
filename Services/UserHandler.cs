@@ -17,8 +17,6 @@ namespace BlazorAppz.Services
             _httpClientWrapper = client;
         }
 
-
-
         public async Task<CreateUser> CreateUser(CreateUser user)
         {
             user.Access = Access.User;
@@ -51,7 +49,6 @@ namespace BlazorAppz.Services
             var path = $"User/GetAllUsers";
             var result = await _httpClientWrapper.Get<IEnumerable<CreateUser>>(path);
             return result;
-
         }
 
 
@@ -60,17 +57,14 @@ namespace BlazorAppz.Services
             var path = $"User/GetCurrentUser";
             var result = await _httpClientWrapper.Get<CreateUser>(path);
             return result;
-
         }
 
         public async Task<CreateUser> EditProfile(CreateUser user)
         {
-
             var path = $"User/EditProfile";
             var stringContent = JsonSerializer.Serialize(user);
             var data = new StringContent(stringContent, Encoding.UTF8, "application/json");
             return await _httpClientWrapper.PutAsync<CreateUser>(path, data);
-
         }
 
 
@@ -91,7 +85,13 @@ namespace BlazorAppz.Services
         }
 
 
-
+        public async Task<CreateUser> LogOut(CreateUser user)
+        {
+            var path = $"User/LogOut";
+            var stringContent = JsonSerializer.Serialize(user);
+            var data = new StringContent(stringContent, Encoding.UTF8, "application/json");
+            return await _httpClientWrapper.PutAsync<CreateUser>(path, data);
+        }
 
     }
 }

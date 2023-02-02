@@ -1,30 +1,73 @@
-﻿@page "/editprofile"
+﻿@page "/editprofile/{userId}"
 @using Services;
 @using Data;
-@inject UserHandler userhandler;
+@inject UserHandler userHandler;
+@inject NavigationManager manager;
 
 
 
 
-<h3>Redigera users profil </h3>
+<h3>Redigera profil </h3>
 
-<EditForm Model="@user" OnSubmit="@HandleSubmit">
-    <InputText id="name" @bind-Value="user.FirstName" /> <br />
+
+
+    <p class="text-danger">@errorMessage</p>
+    <EditForm Model="@user" OnValidSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
+    <p>Förnamn</p>
+    <InputText id="name" @bind-Value="user.FirstName" /><br />
+        <ValidationMessage For="@(() => user.FirstName)" />
+    <p>Efternamn</p>
     <InputText id="name" @bind-Value="user.LastName" /><br />
+        <ValidationMessage For="@(() => user.LastName)" />
+    <p>Username</p>
     <InputText id="name" @bind-Value="user.UserName" /><br />
+    <ValidationMessage For="@(() => user.UserName)" />
+    <P>Lösenord</P>
+    <InputText id="name" @bind-Value="user.Password" /><br/>
+        <ValidationMessage For="@(() => user.Password)" />
+    <p>Email</p>
     <InputText id="name" @bind-Value="user.Email" /><br />
-    <InputText id="name" @bind-Value="user.Password" /><br />
-    <button type="submit">Submit</button> 
+        <ValidationMessage For="@(() => user.Email)" />
+    <button class="btn-small" type="submit">Submit</button>
 </EditForm>
-
+<button @onclick="@BackToUsers" class="btn-small">Gå tillbaka</button>
 
 
 @code {
 
+
+    [Parameter]
+    public string userId { get; set; }
+
+    public string errorMessage { get; set; } = "";
     private CreateUser user = new CreateUser();
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        Guid userID = Guid.Parse(userId);
+        user = await userHandler.GetUser(userID);
+    }
+
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-        user = await userhandler.EditProfile(user);
+        try
+        {
+            user = await userHandler.EditProfile(user);
+            manager.NavigateTo($"/ShowUser/{user.Id.ToString()}");
+
+        }
+        catch (Exception)
+        {
+            errorMessage = "Du måste fylla i fälten";
+        }
+
     }
+
+    public void BackToUsers()
+    {
+        manager.NavigateTo($"/ShowUser/{userId}");
+    }
+
 }

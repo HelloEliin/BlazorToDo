@@ -9,7 +9,6 @@ namespace BlazorAppz.Services
     {
 
         private readonly string _baseUrl =  $"https://localhost:7178/api/";
-
         public HttpClient _httpClient;
 
         public HttpClientWrapperService(HttpClient client)
@@ -22,9 +21,7 @@ namespace BlazorAppz.Services
             var response = await _httpClient.GetAsync(_baseUrl+url);
             response.EnsureSuccessStatusCode();
            using var responseContent = await response.Content.ReadAsStreamAsync();
-
            return await JsonSerializer.DeserializeAsync<T>(responseContent);    
-
         }
 
         public async Task<T> PutAsync<T>(string url, HttpContent content)
@@ -41,8 +38,6 @@ namespace BlazorAppz.Services
             response.EnsureSuccessStatusCode();
             using var responseContent = await response.Content.ReadAsStreamAsync();
             return await JsonSerializer.DeserializeAsync<T>(responseContent);
-
-
         }
 
         public async Task<T> DeleteAsync<T>(string url)
@@ -53,15 +48,6 @@ namespace BlazorAppz.Services
             return await JsonSerializer.DeserializeAsync<T>(responseContent);
         }
 
-
-        //public async Task<T> SendAsync<T>(string url, CancellationToken content)
-        //{
-        //    var response = await _httpClient.DeleteAsync(_baseUrl + url, content);
-        //    response.EnsureSuccessStatusCode();
-
-        //    using var responseContent = await response.Content.ReadAsStreamAsync();
-        //    return await JsonSerializer.DeserializeAsync<T>(responseContent);
-        //}
 
 
     }

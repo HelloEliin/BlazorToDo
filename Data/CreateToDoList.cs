@@ -12,6 +12,8 @@ namespace BlazorAppz.Data
         [JsonPropertyName("createUserId")]
         public Guid CreateUserId { get; set; }
 
+
+
         [JsonPropertyName("listTitle")]
         [Required]
         public string ListTitle { get; set; }

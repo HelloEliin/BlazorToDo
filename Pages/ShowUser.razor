@@ -16,7 +16,9 @@
 
 
     <button @onclick="@(async () => await DeleteUser(theUser))" class="btn-small">Ta bort user</button>
-    <button @onclick="@ChangeAccess" class="btn-small">Ändra access</button>
+<button @onclick="(() => changeAccess = !changeAccess)" class="btn-small">Ändra access</button>
+<button @onclick="@EditProfile" class="btn-small">Redigera profil</button>
+<button @onclick="@BackToUsers" class="btn-small">Gå tillbaka</button>
     @if (changeAccess)
     {
         <p class="pt-5">Välj ny access</p>
@@ -48,16 +50,22 @@
         manager.NavigateTo($"/AllUsers/");
     }
 
-    public void ChangeAccess()
-    {
-        changeAccess = !changeAccess;
-    }
-
     public async System.Threading.Tasks.Task UpdateUser(CreateUser user)
     {
         await userHandler.ChangeAccess(user);
         changeAccess = !changeAccess;
 
+    }
+
+    public void EditProfile()
+    {
+        manager.NavigateTo($"/EditProfile/{userId}");
+    }
+
+
+    public void BackToUsers()
+    {
+        manager.NavigateTo($"/AllUsers");
     }
    
 }

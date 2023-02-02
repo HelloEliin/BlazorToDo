@@ -6,20 +6,24 @@
 @if (!createdWithSuccess)
 {
     <h3>Skapa konto</h3>
-
-    <EditForm Model="@user" OnSubmit="@HandleSubmit">
+    <p class="text-danger">@errorMessage</p>
+    <EditForm Model="@user" OnValidSubmit="@HandleSubmit">
     <DataAnnotationsValidator />
     <p>Förnamn</p>
     <InputText id="name" @bind-Value="user.FirstName" /><br />
+        <ValidationMessage For="@(() => user.FirstName)" />
     <p>Efternamn</p>
     <InputText id="name" @bind-Value="user.LastName" /><br />
+        <ValidationMessage For="@(() => user.LastName)" />
     <p>Username</p>
     <InputText id="name" @bind-Value="user.UserName" /><br />
     <ValidationMessage For="@(() => user.UserName)" />
     <P>Lösenord</P>
     <InputText id="name" @bind-Value="user.Password" /><br/>
+        <ValidationMessage For="@(() => user.Password)" />
     <p>Email</p>
     <InputText id="name" @bind-Value="user.Email" /><br />
+        <ValidationMessage For="@(() => user.Email)" />
     <button class="btn-small" type="submit">Submit</button>
 </EditForm>
 }
@@ -34,11 +38,20 @@
 @code {
     public bool createdWithSuccess = false;
     private CreateUser user = new CreateUser();
+    public string errorMessage { get; set; } = "";
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-        user = await userhandler.CreateUser(user);
-        createdWithSuccess = true;
-        user = new();
+        try
+        {
+            user = await userhandler.CreateUser(user);
+            createdWithSuccess = true;
+            user = new();
+        }
+        catch(Exception)
+        {
+            errorMessage = "Error";
+        }
+
     }
 }

@@ -1,0 +1,16 @@
+﻿@page "/LogOut"
+@using Services;
+@using Data;
+@inject UserHandler userHandler;
+@inject NavigationManager manager;
+
+@code {
+
+    public CreateUser user = new();
+
+    protected override async System.Threading.Tasks.Task OnInitializedAsync()
+    {
+        var logOut = await userHandler.LogOut(user);
+        manager.NavigateTo($"/", true);
+    }
+}

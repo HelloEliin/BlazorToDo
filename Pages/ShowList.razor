@@ -11,44 +11,63 @@
     <tr>
         <td>
             @foreach (var task in theList.Task)
-            {                
-                    if(task.Completed == true)
-                    {
-                        <button @onclick="@(async () => await ShowTask(task))" class="btn-taskTitle" style="color:green">@task.TaskTitle</button>
-                    }else{
-                        <button @onclick="@(async () => await ShowTask(task))" class="btn-taskTitle" style="color:red">@task.TaskTitle</button>
-                    }
-                         
+            {
+                if (task.Completed == true)
+                {
+                    <button @onclick="@(async () => await ShowTask(task))" class="btn-taskTitle" style="color:green">@task.TaskTitle</button>
+                }
+                else
+                {
+                    <button @onclick="@(async () => await ShowTask(task))" class="btn-taskTitle" style="color:red">@task.TaskTitle</button>
+                }
                 <br />
             }
+
         </td>
+        <td><button @onclick="@(() => addingTasks = !addingTasks)" class="btn-small">Lägg till tasks</button><br /></td>
+        <td> <button @onclick="@(async () => await DeleteList(theList))" class="btn-small">Ta bort lista</button><br /></td>
+        <td> <button @onclick="@(() => changeName = !changeName)" class="btn-small">Ändra</button><br /></td>
     </tr>
 </table>
 
-<div class="pt-5">
-    <EditForm Model="@newTask" OnSubmit="@AddTask">
+
+
+
+@if (addingTasks)
+{<div class="pt-5">
+    <EditForm Model="@newTask" OnValidSubmit="@AddTask">
+        <DataAnnotationsValidator />
         <InputText id="name" @bind-Value="newTask.TaskTitle" /> <br />
-        <button type="submit" class="btn-small">Lägg till ny task</button>
+            <button class="btn-small" type="submit">Lägg till</button>
     </EditForm>
-    <button @onclick="@(async () => await DeleteList(theList))" class="btn-small">Ta bort lista</button><br />
-    <button @onclick="@(async () => await UpdateList(theList))" class="btn-small">Ändra listnamn</button><br />
-    @if (@ChangeName)
-    {
-        <EditForm Model="@theList" OnSubmit="@(async () => await SaveChanges(theList))">
-            <InputText id="name" @bind-Value="theList.ListTitle" /> <br />
-            <button type="submit" class="btn-small">Spara</button>
-        </EditForm>
+    </div>
+}
 
 
-    }
-</div>
+@if (changeName)
+{<div class="pt-5">
+    <table class="pt-5 pb-3">
+   <tr class="pt-5">Lägg till som Weekly-list
+    <input type="checkbox" value="@theList.ThisWeek" @onchange="@(() => ThisWeek(theList))" /></tr>
+</table>
+  
+    <p class="pt-5">Nytt namn på listan</p>   
+       <EditForm Model="@theList" OnValidSubmit="@(async () => await SaveChanges(theList))">
+        <DataAnnotationsValidator />
+        <InputText id="name" @bind-Value="theList.ListTitle" /> <br />
+        <button type="submit" class="btn-small">Spara</button>
+    </EditForm>
+    </div>
+ 
+}
 
 
 
 @code {
     private CreateToDoList theList = new();
     private Data.Task newTask = new();
-    public bool ChangeName { get; set; } = false;
+    public bool changeName { get; set; } = false;
+    public bool addingTasks { get; set; } = false;
 
     [Parameter]
     public string listId { get; set; }
@@ -84,14 +103,14 @@
 
     public async System.Threading.Tasks.Task SaveChanges(CreateToDoList list)
     {
-        ChangeName = false;
+        changeName = false;
         await listHandler.UpdateList(list);
     }
 
 
-    public async System.Threading.Tasks.Task UpdateList(CreateToDoList list)
+    public async System.Threading.Tasks.Task ThisWeek(CreateToDoList newList)
     {
-        ChangeName = true;
+        newList.ThisWeek = !newList.ThisWeek;
+        await listHandler.UpdateList(newList);
     }
-
 }

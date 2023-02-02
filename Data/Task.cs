@@ -9,6 +9,7 @@ namespace BlazorAppz.Data
         [JsonPropertyName("id")]
         public Guid Id { get; set; }
         [JsonPropertyName("taskTitle")]
+        [Required]
         public string TaskTitle { get; set; }
         [JsonPropertyName("completed")]
         public bool Completed { get; set; }

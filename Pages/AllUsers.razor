@@ -4,14 +4,21 @@
 @inject UserHandler userhandler;
 @inject NavigationManager manager;
 
-<h3>Alla users</h3>
+<h3 class="pt-5">Alla registrerade användare</h3>
+<p class="text-success">För att se info om användaren klicka på användarnamnet</p>
+<table class="pb-5">
+    <tr><td class="text-lg-start pt-5">Användarnamn</td></tr>
 
 @foreach (var user in users)
 {
-    
+   <tr><td>
         <button class="btn-user" @onclick="@(async () => await GetUser(user))">@user.UserName</button><br />
-    
+        <hr style="color:darkblue">
+   </td> </tr>
 }
+
+
+</table>
 
 <button @onclick="@CreateNewUser" class="btn-small">Skapa ny user</button>
 

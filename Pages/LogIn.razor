@@ -5,19 +5,29 @@
 @inject NavigationManager manager;
 
 <h3>Logga in </h3>
+<p class="text-danger">@errorMessage</p>
 <EditForm Model="@user" OnSubmit="@HandleSubmit">
+    <DataAnnotationsValidator />
     <InputText id="name" @bind-Value="user.UserName" />
-    <InputText id="name" @bind-Value="user.Password" />
+    <InputText id="name" type="password" @bind-Value="user.Password" />
     <button type="submit">Submit</button> 
 </EditForm>
 
 @code {
 
     private CreateUser user = new CreateUser();
+    public string errorMessage { get; set; } = "";
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-        user = await userhandler.Authenticate(user); 
-        manager.NavigateTo($"/MyLists", true);
+        try
+        {
+            user = await userhandler.Authenticate(user);
+            manager.NavigateTo($"/MyLists", true);
+        }
+        catch (Exception)
+        {
+            errorMessage = "Fel användarnamn eller lösenord";
+        }
     }
 }

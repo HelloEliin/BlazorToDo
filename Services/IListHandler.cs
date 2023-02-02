@@ -11,7 +11,8 @@ namespace BlazorAppz.Services
         Task<CreateToDoList> DeleteList(CreateToDoList list);
         Task<CreateToDoList> UpdateList(CreateToDoList list);
         Task<CreateToDoList> ShowList(Guid id);
-        //CreateToDoList WeeklyList(Guid? id);
         Task<IEnumerable<CreateToDoList>> GetCurrentUserListsAsync();
+        Task<IEnumerable<CreateToDoList>> GetWeekly();
+        Task<IEnumerable<CreateToDoList>> GetExpiredLists();
     }
 }

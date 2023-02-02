@@ -23,14 +23,22 @@ namespace BlazorAppz.Data
         [MinLength(6, ErrorMessage = "Must be atleast 6 characters.")]
         [Required]
         public string UserName { get; set; }
+
+
         [JsonPropertyName("email")]
         [EmailAddress]
         [Required]
         public string Email { get; set; }
+
+
+
         [JsonPropertyName("password")]
         [MinLength(6, ErrorMessage = "Must be atleast 6 characters.")]
         [Required]
         public string Password { get; set; }
+
+
+
         [JsonPropertyName("access")]
         public Access Access { get; set; }
         [JsonPropertyName("toDoList")]

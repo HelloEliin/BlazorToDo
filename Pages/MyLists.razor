@@ -6,31 +6,76 @@
 
 
 
-<table>
 
-    <thead>
-        <h1>Mina listor</h1>
-    </thead>
 
-    <tbody>
-        @foreach (var list in lists)
+<h1 class="pb-5">Mina listor</h1>
+
+
+<div class="pt-5 pb-5">
+    <p class="text-md-start">Weekly-lists</p>
+    @foreach (var list in weeklyLists)
+    {
+        @if (list.Task.All(x => x.Completed) == true && list.Task.Any() == true)
         {
-        <button @onclick="@(async () => await GetList(list))" class="btn-medium">@list.ListTitle</button>
-        <button @onclick="@(async () => await DeleteList(list))" class="btn-small">Ta bort lista</button><br />
+            <button @onclick="@(async () => await GetList(list))" class="btn-medium" style="color:green">@list.ListTitle</button>
+            <button class="btn-finished">Klar!</button>
+            <button @onclick="@(async () => await DeleteList(list))" class="btn-small">Ta bort lista</button>
+            <br>
         }
-    </tbody>
-    <button @onclick="@(async () => await CreateNewList())" class="btn-small">Skapa ny lista</button>
-</table>
+        else
+        {
+            <button @onclick="@(async () => await GetList(list))" class="btn-medium">@list.ListTitle</button>
+            <button @onclick="@(async () => await DeleteList(list))" class="btn-small">Ta bort lista</button>
+            <br />
+        }
+    }
+</div>
+
+
+<div class="pt-5">
+    <p>Övriga listor</p>
+    @foreach (var list in lists)
+    {
+        @if (list.ThisWeek == false && list.Expired == false)
+        {
+                    <button @onclick="@(async () => await GetList(list))" class="btn-medium">@list.ListTitle</button>
+                    <button @onclick="@(async () => await DeleteList(list))" class="btn-small">Ta bort lista</button>
+                    <br />
+        }
+
+    }
+</div>
+
+
+
+<div class="pt-5">
+    <p>Utgångna listor</p>
+    @foreach (var list in expired)
+    {
+        <button @onclick="@(async () => await GetList(list))" class="btn-medium">@list.ListTitle</button>
+        <button @onclick="@(async () => await DeleteList(list))" class="btn-small">Ta bort lista</button>
+        <br />
+    }
+</div>
+
+<button @onclick="@(async () => await CreateNewList())" class="btn-small">Skapa ny lista</button>
+
 
 
 @code {
 
     public IEnumerable<CreateToDoList> lists = new List<CreateToDoList>();
 
+    public IEnumerable<CreateToDoList> weeklyLists = new List<CreateToDoList>();
+    public IEnumerable<CreateToDoList> expired = new List<CreateToDoList>();
+
     public async System.Threading.Tasks.Task DeleteList(CreateToDoList list)
     {
         await listHandler.DeleteList(list);
         lists = await listHandler.GetCurrentUserListsAsync();
+        weeklyLists = await listHandler.GetWeekly();
+        
+
     }
 
     public async System.Threading.Tasks.Task GetList(CreateToDoList list)
@@ -41,10 +86,15 @@
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
         lists = await listHandler.GetCurrentUserListsAsync();
+        expired = await listHandler.GetExpiredLists();
+        weeklyLists = await listHandler.GetWeekly();
+
     }
 
     public async System.Threading.Tasks.Task CreateNewList()
     {
         manager.NavigateTo($"/CreateNewToDoList");
     }
+
+
 }

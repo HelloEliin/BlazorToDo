@@ -18,12 +18,17 @@
 
 @if (editProfile)
 {
-    <EditForm Model="@currentUser" OnSubmit="@UpdateUser">
+    <EditForm Model="@currentUser" OnValidSubmit="@UpdateUser">
+        <DataAnnotationsValidator />
         <p class="pt-3">Förnamn : </p>
         <InputText id="name" @bind-Value="currentUser.FirstName" /> <br />
+        <ValidationMessage For="@(() => currentUser.FirstName)" />
         <p class="pt-3">Efternamn: </p><InputText id="name" @bind-Value="currentUser.LastName" /><br />
+        <ValidationMessage For="@(() => currentUser.LastName)" />
         <p class="pt-3">Email : </p><InputText id="name" @bind-Value="currentUser.Email" /><br />
+        <ValidationMessage For="@(() => currentUser.Email)" />
         <p class="pt-3 pb-3">Lösenord : </p><InputText id="name" @bind-Value="currentUser.Password" /><br />
+        <ValidationMessage For="@(() => currentUser.Password)" />
         <button type="submit" class="btn-small">Spara</button>
     </EditForm>
     

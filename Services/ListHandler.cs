@@ -16,7 +16,7 @@ namespace BlazorAppz.Services
             _httpClientWrapper = client;
         }
 
-        public async Task<IEnumerable<CreateToDoList>> GetCurrentUserListsAsync()  //Funkar
+        public async Task<IEnumerable<CreateToDoList>> GetCurrentUserListsAsync() 
         {
             var path = "List/GetCurrentUsersLists";
             var result = await _httpClientWrapper.Get<IEnumerable<CreateToDoList>>(path);
@@ -24,8 +24,7 @@ namespace BlazorAppz.Services
             return result;
         }
 
-
-        public async Task<CreateToDoList> CreateNewToDoList(CreateToDoList list)   //funkar
+        public async Task<CreateToDoList> CreateNewToDoList(CreateToDoList list) 
         {
             list.ThisWeek = false;
             list.Expired = false;
@@ -37,17 +36,16 @@ namespace BlazorAppz.Services
             var stringContent = JsonSerializer.Serialize(list);
             var data = new StringContent(stringContent, Encoding.UTF8, "application/json");
             return await _httpClientWrapper.PostAsync<CreateToDoList>(path, data);
-
         }
 
-        public async Task<CreateToDoList> GetRecentViewedList()  //funakr
+        public async Task<CreateToDoList> GetRecentViewedList()  //oklar
         {
             var path = $"List/ViewSingleList";
             return await _httpClientWrapper.Get<CreateToDoList>(path);
 
         }
 
-        public async Task<IEnumerable<CreateToDoList>> GetAllListsAsync()   //Funkar
+        public async Task<IEnumerable<CreateToDoList>> GetAllListsAsync()  
         {
             var path = $"List/GetAllLists";
             var result = await _httpClientWrapper.Get<IEnumerable<CreateToDoList>>(path);
@@ -55,7 +53,8 @@ namespace BlazorAppz.Services
 
         }
 
-        public async Task<CreateToDoList> DeleteList(CreateToDoList list)   //Funkar
+
+        public async Task<CreateToDoList> DeleteList(CreateToDoList list)  
         {
             var path = $"List/DeleteList/" + list.Id.ToString();
             return await _httpClientWrapper.DeleteAsync<CreateToDoList>(path);
@@ -71,24 +70,32 @@ namespace BlazorAppz.Services
 
         }
 
-        public async Task<CreateToDoList> ShowList(Guid id)   //Funkar
+        public async Task<CreateToDoList> ShowList(Guid id)
         {
-            var path = $"List/ShowList/"+id.ToString();
+            var path = $"List/ShowList/" + id.ToString();
             var result = await _httpClientWrapper.Get<CreateToDoList>(path);
             return result;
         }
 
-            //public CreateToDoList WeeklyList(Guid? id)
-            //{
-            //    if(id == null)
-            //    {
-            //        id = Guid.Parse(ListDictionary.id["ListId"]);
-            //    }
-            //    var list = _dbContext.ToDoLists.FirstOrDefault(x => x.Id == id);
-            //    list.ThisWeek = true;
-            //    _dbContext.SaveChanges();
-            //    return list;
-            //}
+        public async Task<IEnumerable<CreateToDoList>> GetWeekly()
+        {
+            var path = $"List/GetWeeklyLists";
+            var result = await _httpClientWrapper.Get<IEnumerable<CreateToDoList>>(path);
+            return result;
+
+        }
+
+        public async Task<IEnumerable<CreateToDoList>> GetExpiredLists()
+        {
+            var path = $"List/GetExpiredLists";
+            var result = await _httpClientWrapper.Get<IEnumerable<CreateToDoList>>(path);
+            return result;
+
+        }
+
+
+
+
 
 
 
