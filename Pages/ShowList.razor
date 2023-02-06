@@ -22,18 +22,27 @@
                 }
                 <br />
             }
-
         </td>
-        <td><button @onclick="@(() => addingTasks = !addingTasks)" class="btn-small">Lägg till tasks</button><br /></td>
-        <td> <button @onclick="@(async () => await DeleteList(theList))" class="btn-small">Ta bort lista</button><br /></td>
-        <td> <button @onclick="@(() => changeName = !changeName)" class="btn-small">Ändra</button><br /></td>
+        <td><button @onclick="@(() => AddingTasks = !AddingTasks)" class="btn-small">Lägg till tasks</button><br /></td>
+        <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Ta bort lista</button><br /></td>
+
+        <td> <button @onclick="@(() => ChangeName = !ChangeName)" class="btn-small">Ändra</button><br /></td>
     </tr>
 </table>
 
+@if (Confirm)
+{
+    <div class="pt-5">Vill du ta bort listan?</div>
+    <table>
+        <tr>
+    <td> <button @onclick="@(async () => await DeleteList(theList))" class="btn-small">Ja</button></td>
+    <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
+        </tr>
+    </table> 
+}
 
 
-
-@if (addingTasks)
+@if (AddingTasks)
 {<div class="pt-5">
     <EditForm Model="@newTask" OnValidSubmit="@AddTask">
         <DataAnnotationsValidator />
@@ -44,7 +53,7 @@
 }
 
 
-@if (changeName)
+@if (ChangeName)
 {<div class="pt-5">
     <table class="pt-5 pb-3">
    <tr class="pt-5">Lägg till som Weekly-list
@@ -57,17 +66,16 @@
         <InputText id="name" @bind-Value="theList.ListTitle" /> <br />
         <button type="submit" class="btn-small">Spara</button>
     </EditForm>
-    </div>
- 
+    </div> 
 }
-
 
 
 @code {
     private CreateToDoList theList = new();
     private Data.Task newTask = new();
-    public bool changeName { get; set; } = false;
-    public bool addingTasks { get; set; } = false;
+    public bool ChangeName { get; set; } = false;
+    public bool AddingTasks { get; set; } = false;
+    public bool Confirm { get; set; } = false;
 
     [Parameter]
     public string listId { get; set; }
@@ -103,7 +111,7 @@
 
     public async System.Threading.Tasks.Task SaveChanges(CreateToDoList list)
     {
-        changeName = false;
+        ChangeName = false;
         await listHandler.UpdateList(list);
     }
 

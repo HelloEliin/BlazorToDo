@@ -5,23 +5,34 @@
 @inject NavigationManager manager;
 @inject TaskHandler taskHandler;
 
-<h3>TaskMenu</h3>
 
-<p style="@style">@task.TaskTitle</p>
-<button @onclick="@(async () => await DeleteTask(task))" class="btn-small">Ta bort</button>
-<button @onclick="@(async () => await CompletedTask(task))" class="btn-small" style="@styleBtn">Klar</button>
-
+<h1 style="@Style">@Task.TaskTitle</h1>
+<button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Ta bort</button>
+<button @onclick="@(async () => await CompletedTask(Task))" class="btn-small" style="@StyleBtn">Klar</button>
 
 
 
-<button @onclick="(() => EditTask())" class="btn-small">Ändra</button>
-<button @onclick="(() => BackToList(task.CreateToDoListId))" class="btn-small w-auto">Tillbaka till listan</button>
+
+<button @onclick="(() => ChangeName =! ChangeName)" class="btn-small">Ändra</button>
+<button @onclick="(() => BackToList(Task.CreateToDoListId))" class="btn-small w-auto">Tillbaka till listan</button>
+
+@if (Confirm)
+{
+    <div class="pt-5">Vill du ta bort tasken?</div>
+    <table>
+        <tr>
+            <td> <button @onclick="@(async () => await DeleteTask(Task))" class="btn-small">Ja</button></td>
+            <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
+        </tr>
+    </table>
+
+}
 
 
 @if (@ChangeName)
 {
-    <EditForm Model="@task" OnSubmit="@(async () => await SaveChanges(task))">
-        <InputText id="name" @bind-Value="task.TaskTitle" /> <br />
+    <EditForm Model="@Task" OnSubmit="@(async () => await SaveChanges(Task))">
+        <InputText id="name" @bind-Value="Task.TaskTitle" /> <br />
         <button type="submit" class="btn-small">Spara</button>
     </EditForm>
 
@@ -30,19 +41,20 @@
 @code {
 
     [Parameter]
-    public string taskId { get; set; }
+    public string TaskId { get; set; }
 
-    public static Data.Task task { get; set; } = new();
-    public string style { get; set; }
-    public string styleBtn { get; set; }
+    private static Data.Task Task { get; set; } = new();
+    private string Style { get; set; }
+    public string StyleBtn { get; set; }
     public bool ChangeName { get; set; } = false;
+    public bool Confirm { get; set; } = false;
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        Guid taskID = Guid.Parse(taskId);
-        task = await taskHandler.GetSingelTask(taskID);
-        style = task.Completed == true ? "color:green" : "color:red";
-        styleBtn = task.Completed == true ? "background-color:green" : "background-color:red";
+        Guid taskID = Guid.Parse(TaskId);
+        Task = await taskHandler.GetSingelTask(taskID);
+        Style = Task.Completed == true ? "color:green" : "color:red";
+        StyleBtn = Task.Completed == true ? "background-color:green" : "background-color:red";
 
     }
 
@@ -55,15 +67,10 @@
 
     public async System.Threading.Tasks.Task CompletedTask(Data.Task task)  
     {
-        Guid taskID = Guid.Parse(taskId);
+        Guid taskID = Guid.Parse(TaskId);
         task = await taskHandler.MarkAsComplete(task);
-        style = task.Completed == true ? "color:green" : "color:red";
-        styleBtn = task.Completed == true ? "background-color:green" : "background-color:red";
-    }
-
-    public void EditTask()
-    {
-        ChangeName = !ChangeName;
+        Style = task.Completed == true ? "color:green" : "color:red";
+        StyleBtn = task.Completed == true ? "background-color:green" : "background-color:red";
     }
 
     public async System.Threading.Tasks.Task SaveChanges(Data.Task task)  

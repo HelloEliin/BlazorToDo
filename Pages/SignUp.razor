@@ -6,7 +6,6 @@
 @if (!createdWithSuccess)
 {
     <h3>Skapa konto</h3>
-    <p class="text-danger">@errorMessage</p>
     <EditForm Model="@user" OnValidSubmit="@HandleSubmit">
     <DataAnnotationsValidator />
     <p>Förnamn</p>
@@ -25,7 +24,7 @@
     <InputText id="name" @bind-Value="user.Email" /><br />
         <ValidationMessage For="@(() => user.Email)" />
     <button class="btn-small" type="submit">Submit</button>
-</EditForm>
+    </EditForm>
 }
 
 
@@ -38,20 +37,11 @@
 @code {
     public bool createdWithSuccess = false;
     private CreateUser user = new CreateUser();
-    public string errorMessage { get; set; } = "";
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-        try
-        {
-            user = await userhandler.CreateUser(user);
-            createdWithSuccess = true;
-            user = new();
-        }
-        catch(Exception)
-        {
-            errorMessage = "Error";
-        }
-
+        user = await userhandler.CreateUser(user);
+        createdWithSuccess = true;
+        user = new();
     }
 }

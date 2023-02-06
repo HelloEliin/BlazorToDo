@@ -12,7 +12,7 @@
 
 
 <div class="pt-5 pb-5">
-    <p class="text-md-start">Weekly-lists</p>
+    <p class="text-lg-start text-success">Weekly-lists</p>
     @foreach (var list in weeklyLists)
     {
         @if (list.Task.All(x => x.Completed) == true && list.Task.Any() == true)
@@ -48,7 +48,7 @@
 
 
 
-<div class="pt-5">
+<div class="pt-5 pb-5">
     <p>Utgångna listor</p>
     @foreach (var list in expired)
     {

@@ -15,11 +15,26 @@
 <p>Access : @theUser.Access</p>
 
 
-    <button @onclick="@(async () => await DeleteUser(theUser))" class="btn-small">Ta bort user</button>
-<button @onclick="(() => changeAccess = !changeAccess)" class="btn-small">Ändra access</button>
+
+<button @onclick="(() => ChangeAccess = !ChangeAccess)" class="btn-small">Ändra access</button>
 <button @onclick="@EditProfile" class="btn-small">Redigera profil</button>
+<button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Ta bort user</button>
 <button @onclick="@BackToUsers" class="btn-small">Gå tillbaka</button>
-    @if (changeAccess)
+
+
+@if (Confirm)
+{
+    <div class="pt-5">Vill du ta bort usern?</div>
+    <table>
+        <tr>
+            <td><button @onclick="@(async () => await DeleteUser(theUser))" class="btn-small">Ja</button></td>
+            <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
+        </tr>
+    </table>
+
+}
+
+    @if (ChangeAccess)
     {
         <p class="pt-5">Välj ny access</p>
         <select @bind-value="theUser.Access" @onchange="@(() => UpdateUser(theUser))" @bind-value:event="oninput">
@@ -33,14 +48,15 @@
 
 @code {
     private CreateUser theUser = new();
-    private bool changeAccess { get; set; } = false;
+    private bool ChangeAccess { get; set; } = false;
+    private bool Confirm { get; set; } = false;
 
     [Parameter]
-    public string userId { get; set; }
+    public string UserId { get; set; }
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-        Guid userID = Guid.Parse(userId);
+        Guid userID = Guid.Parse(UserId);
         theUser = await userHandler.GetUser(userID);
     }
 
@@ -53,13 +69,13 @@
     public async System.Threading.Tasks.Task UpdateUser(CreateUser user)
     {
         await userHandler.ChangeAccess(user);
-        changeAccess = !changeAccess;
+        ChangeAccess = !ChangeAccess;
 
     }
 
     public void EditProfile()
     {
-        manager.NavigateTo($"/EditProfile/{userId}");
+        manager.NavigateTo($"/EditProfile/{UserId}");
     }
 
 
