@@ -6,87 +6,68 @@
 
 
 <div class="pt-5">
-    @if (@createNew)
+    @if (CreateNew)
     {
-        <p class="text-danger">@errorMessage</p>
         <h3>Skapa ny lista</h3>
         <br />
-        <EditForm Model="@newList">
+        <EditForm Model="@newList" OnValidSubmit="@HandleSubmit">
+            <DataAnnotationsValidator />
             <InputText id="name" @bind-Value="newList.ListTitle" /> <br />
+            <ValidationMessage For="@(() => newList.ListTitle)" />
+            <button type="submit" class="btn-small">Skapa</button>
         </EditForm>
-        <button class="btn-small" @onclick="HandleSubmit">Skapa</button>
     }
 </div>
 
 
-@if (@addTask)
+@if (AddNewTask)
 {
     <div class="pt-5">
         <p>Lägg till som Weekly-list</p>
-        <input type="checkbox" value="@newList.ThisWeek" @onchange="@(() => ThisWeek(newList))" />
-        <p class="text-danger">@errorMessage</p>
+        <input type="checkbox" value="@newList.ThisWeek" @onchange="@(() => AddForThisWeek(newList))" />
         <h3>@newList.ListTitle</h3>
         @foreach (var task in newList.Task)
         {
             <p>@task.TaskTitle</p>
         }
-        <EditForm Model="@newList" OnValidSubmit="@AddTask">
+        <EditForm Model="@newTask" OnValidSubmit="@AddTask">
+            <DataAnnotationsValidator />
             <InputText id="name" @bind-Value="newTask.TaskTitle" /> <br />
+            <ValidationMessage For="@(() => newTask.TaskTitle)" />
             <button type="submit" class="btn-small">Lägg till task</button>
         </EditForm>
     </div>
 }
 
 
-
-
-
-
 @code {
 
     public CreateToDoList newList = new CreateToDoList();
     public Data.Task newTask { get; set; } = new();
-    public bool addTask { get; set; } = false;
-    public bool createNew { get; set; } = true;
-    public bool thisWeek { get; set; } = false;
-    public string errorMessage { get; set; } = "";
+    public bool AddNewTask { get; set; } = false;
+    public bool CreateNew { get; set; } = true;
+    public bool ThisWeek { get; set; } = false;
     Guid listID = Guid.NewGuid();
 
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-        try
-        {
-            newList = await listHandler.CreateNewToDoList(newList);
-            listID = newList.Id;
-            addTask = !addTask;
-            createNew = false;
-        }
-        catch (Exception)
-        {
-            errorMessage = "Du måste ange listnamn";
-        }
-
+        newList = await listHandler.CreateNewToDoList(newList);
+        listID = newList.Id;
+        AddNewTask = !AddNewTask;
+        CreateNew = false;
     }
 
     public async void AddTask()
     {
-        try
-        {
-            newTask.CreateToDoListId = listID;
-            newTask.Id = Guid.NewGuid();
-            newList.Task.Add(newTask);
-            await taskHandler.AddTask(newTask);
-            newTask = new();
-            StateHasChanged();
-        }
-        catch (Exception)   //Slår ej
-        {
-            errorMessage = "Du måste ange namn på task";
-        }
-
+        newTask.CreateToDoListId = listID;
+        newTask.Id = Guid.NewGuid();
+        newList.Task.Add(newTask);
+        await taskHandler.AddTask(newTask);
+        newTask = new();
+        StateHasChanged();
     }
 
-    public async System.Threading.Tasks.Task ThisWeek(CreateToDoList newList)
+    public async System.Threading.Tasks.Task AddForThisWeek(CreateToDoList newList)
     {
         newList.ThisWeek = true;
         await listHandler.UpdateList(newList);

@@ -10,9 +10,6 @@
 <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Ta bort</button>
 <button @onclick="@(async () => await CompletedTask(Task))" class="btn-small" style="@StyleBtn">Klar</button>
 
-
-
-
 <button @onclick="(() => ChangeName =! ChangeName)" class="btn-small">Ändra</button>
 <button @onclick="(() => BackToList(Task.CreateToDoListId))" class="btn-small w-auto">Tillbaka till listan</button>
 
@@ -25,9 +22,7 @@
             <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
         </tr>
     </table>
-
 }
-
 
 @if (@ChangeName)
 {
@@ -35,7 +30,6 @@
         <InputText id="name" @bind-Value="Task.TaskTitle" /> <br />
         <button type="submit" class="btn-small">Spara</button>
     </EditForm>
-
 }
 
 @code {
@@ -55,7 +49,6 @@
         Task = await taskHandler.GetSingelTask(taskID);
         Style = Task.Completed == true ? "color:green" : "color:red";
         StyleBtn = Task.Completed == true ? "background-color:green" : "background-color:red";
-
     }
 
     public async System.Threading.Tasks.Task DeleteTask(Data.Task task)

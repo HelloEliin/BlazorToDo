@@ -13,11 +13,11 @@
 <p>Email : @currentUser.Email</p>
 <p>Lösenord : @currentUser.Password</p>
 
-<button @onclick="@EditProfile" class="btn-small">Redigera profil</button>
+<button @onclick="@(() => EditProfile =! EditProfile)" class="btn-small">Redigera profil</button>
 
 
-@if (editProfile)
-{
+@if (EditProfile)
+{ 
     <EditForm Model="@currentUser" OnValidSubmit="@UpdateUser">
         <DataAnnotationsValidator />
         <p class="pt-3">Förnamn : </p>
@@ -39,7 +39,7 @@
 
 @code {
     public CreateUser currentUser = new();
-    public bool editProfile { get; set; } = false;
+    public bool EditProfile { get; set; } = false;
 
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
@@ -47,15 +47,10 @@
         currentUser = await userHandler.GetCurrentUser();
     }
 
-    public void EditProfile()
-    {
-        editProfile = !editProfile;
-    }
-
     public async System.Threading.Tasks.Task UpdateUser()
     {
         currentUser = await userHandler.EditProfile(currentUser);
-        editProfile = !editProfile;
+        EditProfile = !EditProfile;
     }
 
 

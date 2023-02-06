@@ -4,7 +4,6 @@
 @inject UserHandler userHandler;
 @inject NavigationManager manager;
 
-
 <h3 class="pb-5 pt-5">Användare</h3>
 
 <p>Användarnamn: @theUser.UserName </p>
@@ -13,8 +12,6 @@
 <p>Email : @theUser.Email</p>
 <p>Lösenord : @theUser.Password</p>
 <p>Access : @theUser.Access</p>
-
-
 
 <button @onclick="(() => ChangeAccess = !ChangeAccess)" class="btn-small">Ändra access</button>
 <button @onclick="@EditProfile" class="btn-small">Redigera profil</button>
@@ -31,19 +28,17 @@
             <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
         </tr>
     </table>
-
 }
 
-    @if (ChangeAccess)
-    {
-        <p class="pt-5">Välj ny access</p>
-        <select @bind-value="theUser.Access" @onchange="@(() => UpdateUser(theUser))" @bind-value:event="oninput">
-            <option value="@Access.User">0</option>
-            <option value="@Access.Moderator">1</option>
-            <option value="@Access.Admin">2</option>
-        </select>
-    }
-
+@if (ChangeAccess)
+{
+    <p class="pt-5">Välj ny access</p>
+    <select @bind-value="theUser.Access" @onchange="@(() => UpdateUser(theUser))" @bind-value:event="oninput">
+        <option value="@Access.User">0</option>
+        <option value="@Access.Moderator">1</option>
+        <option value="@Access.Admin">2</option>
+    </select>
+}
 
 
 @code {
@@ -70,7 +65,6 @@
     {
         await userHandler.ChangeAccess(user);
         ChangeAccess = !ChangeAccess;
-
     }
 
     public void EditProfile()
@@ -83,5 +77,5 @@
     {
         manager.NavigateTo($"/AllUsers");
     }
-   
+
 }

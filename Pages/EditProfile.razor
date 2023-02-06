@@ -4,14 +4,9 @@
 @inject UserHandler userHandler;
 @inject NavigationManager manager;
 
-
-
-
 <h3>Redigera profil </h3>
+<p class="text-success">Redigera users profiler som admin</p>
 
-
-
-    <p class="text-danger">@errorMessage</p>
     <EditForm Model="@user" OnValidSubmit="@HandleSubmit">
     <DataAnnotationsValidator />
     <p>Förnamn</p>
@@ -31,16 +26,15 @@
         <ValidationMessage For="@(() => user.Email)" />
     <button class="btn-small" type="submit">Submit</button>
 </EditForm>
+
+
 <button @onclick="@BackToUsers" class="btn-small">Gå tillbaka</button>
 
 
 @code {
 
-
     [Parameter]
     public string userId { get; set; }
-
-    public string errorMessage { get; set; } = "";
     private CreateUser user = new CreateUser();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
@@ -49,20 +43,10 @@
         user = await userHandler.GetUser(userID);
     }
 
-
     public async System.Threading.Tasks.Task HandleSubmit()
     {
-        try
-        {
-            user = await userHandler.EditProfile(user);
-            manager.NavigateTo($"/ShowUser/{user.Id.ToString()}");
-
-        }
-        catch (Exception)
-        {
-            errorMessage = "Du måste fylla i fälten";
-        }
-
+        user = await userHandler.EditProfile(user);
+        manager.NavigateTo($"/ShowUser/{user.Id.ToString()}");
     }
 
     public void BackToUsers()

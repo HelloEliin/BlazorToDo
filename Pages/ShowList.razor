@@ -1,9 +1,9 @@
-﻿@page "/ShowList/{listId}"; 
+﻿@page "/ShowList/{listId}";
 @using Services;
 @using Data;
 @inject ListHandler listHandler;
 @inject NavigationManager manager;
-@inject TaskHandler taskHandler;   
+@inject TaskHandler taskHandler;
 
 
 <h1>@theList.ListTitle</h1>
@@ -35,38 +35,41 @@
     <div class="pt-5">Vill du ta bort listan?</div>
     <table>
         <tr>
-    <td> <button @onclick="@(async () => await DeleteList(theList))" class="btn-small">Ja</button></td>
-    <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
+            <td> <button @onclick="@(async () => await DeleteList(theList))" class="btn-small">Ja</button></td>
+            <td> <button @onclick="@(() => Confirm = !Confirm)" class="btn-small">Nej</button></td>
         </tr>
-    </table> 
+    </table>
 }
 
 
 @if (AddingTasks)
-{<div class="pt-5">
-    <EditForm Model="@newTask" OnValidSubmit="@AddTask">
-        <DataAnnotationsValidator />
-        <InputText id="name" @bind-Value="newTask.TaskTitle" /> <br />
+{
+    <div class="pt-5">
+        <EditForm Model="@newTask" OnValidSubmit="@AddTask">
+            <DataAnnotationsValidator />
+            <InputText id="name" @bind-Value="newTask.TaskTitle" /> <br />
             <button class="btn-small" type="submit">Lägg till</button>
-    </EditForm>
-    </div>
+        </EditForm>
+   </div>
 }
 
-
 @if (ChangeName)
-{<div class="pt-5">
-    <table class="pt-5 pb-3">
-   <tr class="pt-5">Lägg till som Weekly-list
-    <input type="checkbox" value="@theList.ThisWeek" @onchange="@(() => ThisWeek(theList))" /></tr>
-</table>
-  
-    <p class="pt-5">Nytt namn på listan</p>   
-       <EditForm Model="@theList" OnValidSubmit="@(async () => await SaveChanges(theList))">
-        <DataAnnotationsValidator />
-        <InputText id="name" @bind-Value="theList.ListTitle" /> <br />
-        <button type="submit" class="btn-small">Spara</button>
-    </EditForm>
-    </div> 
+{
+    <div class="pt-5">
+        <table class="pt-5 pb-3">
+            <tr class="pt-5">
+                Lägg till som Weekly-list
+                <input type="checkbox" value="@theList.ThisWeek" @onchange="@(() => ThisWeek(theList))" />
+            </tr>
+        </table>
+
+        <p class="pt-5">Nytt namn på listan</p>
+        <EditForm Model="@theList" OnValidSubmit="@(async () => await SaveChanges(theList))">
+            <DataAnnotationsValidator />
+            <InputText id="name" @bind-Value="theList.ListTitle" /> <br />
+            <button type="submit" class="btn-small">Spara</button>
+        </EditForm>
+    </div>
 }
 
 
@@ -95,7 +98,7 @@
     {
         Guid listID = Guid.Parse(listId);
         newTask.CreateToDoListId = listID;
-        newTask.Id = Guid.NewGuid();  
+        newTask.Id = Guid.NewGuid();
         theList.Task.Add(newTask);
         await taskHandler.AddTask(newTask);
         newTask = new();
@@ -106,7 +109,7 @@
     public async System.Threading.Tasks.Task DeleteList(CreateToDoList list)
     {
         await listHandler.DeleteList(theList);
-        manager.NavigateTo($"/MyLists");      
+        manager.NavigateTo($"/MyLists");
     }
 
     public async System.Threading.Tasks.Task SaveChanges(CreateToDoList list)
@@ -114,7 +117,6 @@
         ChangeName = false;
         await listHandler.UpdateList(list);
     }
-
 
     public async System.Threading.Tasks.Task ThisWeek(CreateToDoList newList)
     {

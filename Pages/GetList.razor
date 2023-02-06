@@ -3,36 +3,27 @@
 @using Data;
 @inject ListHandler listHandler;
 
-
-
 <PageTitle>Index</PageTitle>
 
-<h1>Alla listor i systemet</h1>
+<h1>Alla listor registrerade</h1>
 
 
 <div class="list-group">
     @foreach (var list in lists)
     {
-        @list.ListTitle;<br />
+        @list.ListTitle;
+        
+        <br />
     }
 </div>
 
 
-
-
-
-
 @code {
-
 
     private IEnumerable<CreateToDoList> lists = new List<CreateToDoList>();
 
     protected override async System.Threading.Tasks.Task OnInitializedAsync()
     {
-            lists = await listHandler.GetAllListsAsync();
+        lists = await listHandler.GetAllListsAsync();
     }
-
-
-
-
 }

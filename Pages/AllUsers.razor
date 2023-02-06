@@ -9,20 +9,18 @@
 <table class="pb-5">
     <tr><td class="text-lg-start pt-5">Användarnamn</td></tr>
 
-@foreach (var user in users)
-{
-   <tr><td>
-        <button class="btn-user" @onclick="@(async () => await GetUser(user))">@user.UserName</button><br />
-        <hr style="color:darkblue">
-   </td> </tr>
-}
-
-
+    @foreach (var user in users)
+    {
+        <tr>
+            <td>
+                <button class="btn-user" @onclick="@(async () => await GetUser(user))">@user.UserName</button><br />
+                <hr style="color:darkblue">
+            </td>
+        </tr>
+    }
 </table>
 
 <button @onclick="@CreateNewUser" class="btn-small">Skapa ny user</button>
-
-
 
 @code
 {
@@ -34,7 +32,6 @@
         users = await userhandler.GetAllUsersAsync();
     }
 
-
     public void CreateNewUser()
     {
         manager.NavigateTo($"/SignUp");
@@ -44,7 +41,4 @@
     {
         manager.NavigateTo($"/ShowUser/{user.Id.ToString()}");
     }
-
-
-
 }
